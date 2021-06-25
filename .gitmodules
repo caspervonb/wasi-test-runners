@@ -1,0 +1,6 @@
+[submodule "tools"]
+	path = tools
+	url = https://github.com/caspervonb/wasi-test-tools.git
+[submodule "tests"]
+	path = tests
+	url = https://github.com/caspervonb/wasi-testsuite.git
