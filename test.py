@@ -2,6 +2,7 @@ import glob
 import json
 import subprocess
 import sys
+import os
 
 command = sys.argv[1]
 runtime = subprocess.check_output([command, "-V"]).decode("utf-8").rstrip('\n') 
@@ -10,6 +11,8 @@ results = []
 for filepath in glob.glob("tests/*/*.wasm"):
     process = subprocess.run(["tools/wasm-test", command, filepath],
             capture_output=True, text=True)
+
+    name = os.path.relpath(filepath, os.path.join(os.curdir, "tests"))
 
     status = None
     if process.returncode == 0:
@@ -20,7 +23,7 @@ for filepath in glob.glob("tests/*/*.wasm"):
     message = process.stdout
 
     results.append({
-      'name': filepath,
+      'name': name,
       'status': status,
       'message': message,
     })
