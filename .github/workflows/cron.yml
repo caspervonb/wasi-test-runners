@@ -1,4 +1,4 @@
-name: wasmtime
+name: cron
 
 on:
   schedule:
@@ -7,6 +7,12 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        runtime:
+          - wasmer
+          - wasmtime
+
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
@@ -15,25 +21,22 @@ jobs:
           submodules: true
           persist-credentials: false
 
-      - name: Setup wasmtime
-        run: |-
-          curl https://wasmtime.dev/install.sh -sSf | bash
-          echo "$HOME/.wasmtime/bin" >> $GITHUB_PATH
-
-      - name: Run tests
-        run: |-
-          python test.py wasmtime > wasmtime.json
-
-      - name: Checkout results repository
+      - name: Clone results repository
         uses: actions/checkout@v2
         with:
           repository: caspervonb/wasi-test-results
           path: results
           token: ${{ secrets.PAT }}
 
+      - name: Setup ${{ matrix.runtime }}
+        uses: .github/actions/setup-${{ runtime }}
+
+      - name: Run tests
+        run: |-
+          python test.py ${{ matrix.runtime }} > results/${{ matrix.runtime }}.json
+
       - name: Commit to results repository
         run: |-
-          cp wasmtime.json results/wasmtime.json
           cd results
           git config user.name "Casper Beyer"
           git config user.email "caspervonb@pm.me"
