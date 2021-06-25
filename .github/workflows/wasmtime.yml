@@ -18,6 +18,7 @@ jobs:
       - name: Setup wasmtime
         run: |-
           curl https://wasmtime.dev/install.sh -sSf | bash
+          echo "$HOME/.wasmtime/bin" >> $GITHUB_PATH
 
       - name: Run tests
         run: |-
