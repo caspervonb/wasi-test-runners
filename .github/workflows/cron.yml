@@ -21,13 +21,6 @@ jobs:
           submodules: true
           persist-credentials: false
 
-      - name: Clone output repository
-        uses: actions/checkout@v2
-        with:
-          repository: caspervonb/wasi-test-results
-          path: results
-          token: ${{ secrets.PAT }}
-
       - name: Setup wasmer
         if: matrix.runtime == 'wasmer'
         run: |-
@@ -42,9 +35,31 @@ jobs:
 
       - name: Run tests
         run: |-
-          python test.py ${{ matrix.runtime }} > results/${{ matrix.runtime }}.json
+          python test.py ${{ matrix.runtime }} > ${{ matrix.runtime }}.json
 
-      - name: Commit to results repository
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: results
+          path: ./*.json
+
+  push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+        with:
+          repository: caspervonb/wasi-test-results
+          path: results
+          token: ${{ secrets.PAT }}
+
+      - name: Download results
+        uses: actions/download-artifact@v2
+        with:
+          name: results
+
+      - name: Commit
         run: |-
           cd results
           git config user.name "Casper Beyer"
