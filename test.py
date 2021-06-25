@@ -5,7 +5,12 @@ import sys
 import os
 
 command = sys.argv[1]
-runtime = subprocess.check_output([command, "-V"]).decode("utf-8").rstrip('\n') 
+
+output = subprocess.check_output([command, "-V"])
+output = output.decode("utf-8")
+output = output.rstrip("\n")
+
+(runtime_name, runtime_version) = tuple(output.split(" "))
 
 results = []
 for filepath in glob.glob("tests/*/*.wasm"):
@@ -30,6 +35,9 @@ for filepath in glob.glob("tests/*/*.wasm"):
 
 
 print(json.dumps({
-  'runtime': runtime,
+  'runtime': {
+      'name': runtime_name,
+      'version': runtime_version,
+  },
   'results': results,
 }, sort_keys=True, indent=2))
