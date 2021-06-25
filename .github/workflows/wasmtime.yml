@@ -29,13 +29,14 @@ jobs:
         with:
           repository: caspervonb/wasi-test-results
           path: results
+          token: ${{ secrets.PAT }}
 
       - name: Commit to results repository
         run: |-
           cp wasmtime.json results/wasmtime.json
           cd results
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "Casper Beyer"
+          git config user.email "caspervonb@pm.me"
           git add .
           git commit -m "Update results"
           git push
