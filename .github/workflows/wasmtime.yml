@@ -22,4 +22,20 @@ jobs:
 
       - name: Run tests
         run: |-
-          python test.py wasmtime
+          python test.py wasmtime > wasmtime.json
+
+      - name: Checkout results repository
+        uses: actions/checkout@v2
+        with:
+          repository: caspervonb/wasi-test-results
+          path: results
+
+      - name: Commit to results repository
+        run: |-
+          cp wasmtime.json results/wasmtime.json
+          cd results
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Update results"
+          git push
