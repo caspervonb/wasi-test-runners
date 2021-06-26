@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 
-command = sys.argv[1]
+command = os.path.abspath("tools/run-" + sys.argv[1])
 
 output = subprocess.check_output([command, "-V"])
 output = output.decode("utf-8")
