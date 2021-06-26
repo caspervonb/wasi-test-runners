@@ -37,10 +37,10 @@ jobs:
         run: |-
           python test.py ${{ matrix.runtime }} > ${{ matrix.runtime }}.json
 
-      - name: Upload results
+      - name: Upload result
         uses: actions/upload-artifact@v2
         with:
-          name: results
+          name: result
           path: ./*.json
 
   push:
@@ -51,17 +51,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: caspervonb/wasi-test-results
-          path: results
           token: ${{ secrets.PAT }}
 
       - name: Download results
         uses: actions/download-artifact@v2
         with:
-          name: results
+          name: result
 
       - name: Commit
         run: |-
-          cd results
           git config user.name "Casper Beyer"
           git config user.email "caspervonb@pm.me"
           git add -A .
