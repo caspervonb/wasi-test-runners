@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         runtime:
+          - deno
           - wasmer
           - wasmtime
 
@@ -20,6 +21,12 @@ jobs:
         with:
           submodules: true
           persist-credentials: false
+
+      - name: Setup deno
+        if: matrix.runtime == 'deno'
+        run: |-
+          curl -fsSL https://deno.land/x/install/install.sh | sh
+          echo "$HOME/.deno/bin" >> $GITHUB_PATH
 
       - name: Setup wasmer
         if: matrix.runtime == 'wasmer'
