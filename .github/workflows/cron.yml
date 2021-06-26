@@ -11,6 +11,7 @@ jobs:
       matrix:
         runtime:
           - deno
+          - node
           - wasmer
           - wasmtime
 
