@@ -64,6 +64,6 @@ jobs:
           cd results
           git config user.name "Casper Beyer"
           git config user.email "caspervonb@pm.me"
-          git add .
+          git add -A .
           git commit -m "Update results"
           git push
